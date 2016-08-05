@@ -1,1 +1,1 @@
-/// <reference path="koa-webpack-dev-middleware/index.d.ts" />
+/// <reference path="suncalc/index.d.ts" />
