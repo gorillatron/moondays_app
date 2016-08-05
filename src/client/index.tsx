@@ -23,7 +23,7 @@ const Moon = (properties:MoonProps) => {
       width: `${size}px`,
       height: `${size}px`,
       backgroundColor: "#ECF0F1",
-      borderRadius: "50%"
+      borderRadius: "50%",
     }}>
       <Crater illumination={illumination} size={130} top={10} left={20} />
       <Crater illumination={illumination} size={55} top={55} left={12} />
@@ -46,20 +46,29 @@ const Crater = (properties:CraterProps) => {
   const {fraction, phase} = illumination
 
   const maxBorderSize = size / 100 * 20
-  const borderWidthPx = maxBorderSize * fraction
-  const borderWidth = phase > 0.5 ``
+  const borderWidthPx = maxBorderSize - (maxBorderSize * fraction)
+  const borderWidth = phase < 0.5 ? `0px ${borderWidthPx}px ${borderWidthPx}px 0px` : `0px 0px ${borderWidthPx}px ${borderWidthPx}px`
+  const adjustedSize = size - borderWidthPx
 
   return (
     <div style={{
       position: "absolute",
       top: `${top}%`,
       left: `${left}%`,
+      overflow: 'hidden',
       width: `${size}px`,
       height: `${size}px`,
       borderRadius: "50%",
-      borderWidth,
       backgroundColor: "#BABCC1"
     }}>
+      <div style={{
+        width: `${adjustedSize}px`,
+        height: `${adjustedSize}px`,
+        borderRadius: "50%",
+        borderStyle: 'solid',
+        borderColor: `rgba(0, 0, 0, ${fraction * 0.5})`,
+        borderWidth
+      }} />
     </div>
   )
 }
@@ -86,7 +95,7 @@ class App extends React.Component<{}, {illumination: suncalc.Illumination, date:
         date,
         illumination
       })
-    }, 500)
+    }, 100)
   }
 
   render() {
