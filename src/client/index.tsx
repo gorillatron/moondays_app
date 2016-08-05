@@ -15,23 +15,52 @@ interface MoonProps {
 const Moon = (properties:MoonProps) => {
 
   const {illumination, size} = properties
+  const {fraction, phase} = illumination
 
   return (
     <div style={{
       position: "relative",
+      overflow: 'hidden',
       margin: "100px auto",
       width: `${size}px`,
       height: `${size}px`,
-      backgroundColor: "#ECF0F1",
+      backgroundColor: `rgba(0, 0, 0, 0.4)`,
       borderRadius: "50%",
+      zIndex: 1,
     }}>
+
+      <MoonShadow size={size} illumination={illumination}/>
+
       <Crater illumination={illumination} size={130} top={10} left={20} />
       <Crater illumination={illumination} size={55} top={55} left={12} />
       <Crater illumination={illumination} size={30} top={70} left={65} />
+
     </div>
   )
 }
 
+
+const MoonShadow = (properties:MoonProps) => {
+
+  const {illumination, size} = properties
+  const {fraction, phase} = illumination
+
+  const rLeft = 50
+  const rTop = (size + 4) / 2
+
+  return (
+    <div style={{
+      position: 'absolute',
+      zIndex: 2,
+      height: `${size + 4}px`,
+      width: `${size + 4}px`,
+      top: '-2px',
+      left: '-2px',
+      
+    }}>
+    </div>
+  )
+}
 
 
 interface CraterProps extends MoonProps {
@@ -47,8 +76,9 @@ const Crater = (properties:CraterProps) => {
 
   const maxBorderSize = size / 100 * 20
   const borderWidthPx = maxBorderSize - (maxBorderSize * fraction)
-  const borderWidth = phase < 0.5 ? `0px ${borderWidthPx}px ${borderWidthPx}px 0px` : `0px 0px ${borderWidthPx}px ${borderWidthPx}px`
+  const borderWidth = phase > 0.5 ? `0px ${borderWidthPx}px ${borderWidthPx}px 0px` : `0px 0px ${borderWidthPx}px ${borderWidthPx}px`
   const adjustedSize = size - borderWidthPx
+  const borderOpacity = fraction * 0.5
 
   return (
     <div style={{
@@ -59,14 +89,16 @@ const Crater = (properties:CraterProps) => {
       width: `${size}px`,
       height: `${size}px`,
       borderRadius: "50%",
-      backgroundColor: "#BABCC1"
+      backgroundColor: "#BABCC1",
+      zIndex: 3,
     }}>
       <div style={{
-        width: `${adjustedSize}px`,
-        height: `${adjustedSize}px`,
+        width: `${adjustedSize + 4}px`,
+        height: `${adjustedSize + 4}px`,
+        margin: '-2px 0px 0px -1px',
         borderRadius: "50%",
         borderStyle: 'solid',
-        borderColor: `rgba(0, 0, 0, ${fraction * 0.5})`,
+        borderColor: `rgba(0, 0, 0, ${borderOpacity})`,
         borderWidth
       }} />
     </div>
