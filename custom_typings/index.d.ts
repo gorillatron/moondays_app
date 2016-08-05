@@ -1,0 +1,1 @@
+/// <reference path="koa-webpack-dev-middleware/index.d.ts" />

@@ -1,10 +1,9 @@
 module.exports = {
 
-  entry: "./src/index.tsx",
+  entry: "./src/client/index.tsx",
 
   output: {
-      publicPath: "/assets/",
-      filename: "bundle.js",
+    filename: "bundle.js",
   },
 
   devtool: "source-map",
