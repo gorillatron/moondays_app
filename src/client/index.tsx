@@ -16,11 +16,20 @@ const Moon = (properties:MoonProps) => {
 
   const {illumination, size} = properties
 
-  return <div>
-    <Crater illumination={illumination} size={55} top={10} left={50} />
-    <Crater illumination={illumination} size={20} top={70} left={10} />
-    <Crater illumination={illumination} size={10} top={90} left={75} />
-  </div>
+  return (
+    <div style={{
+      position: "relative",
+      margin: "100px auto",
+      width: `${size}px`,
+      height: `${size}px`,
+      backgroundColor: "#ECF0F1",
+      borderRadius: "50%"
+    }}>
+      <Crater illumination={illumination} size={130} top={10} left={20} />
+      <Crater illumination={illumination} size={55} top={55} left={12} />
+      <Crater illumination={illumination} size={30} top={70} left={65} />
+    </div>
+  )
 }
 
 
@@ -32,26 +41,57 @@ interface CraterProps extends MoonProps {
 }
 
 const Crater = (properties:CraterProps) => {
-  return <div></div>
+
+  const {illumination, size, top, left} = properties
+  const {fraction, phase} = illumination
+
+  const maxBorderSize = size / 100 * 20
+  const borderWidthPx = maxBorderSize * fraction
+  const borderWidth = phase > 0.5 ``
+
+  return (
+    <div style={{
+      position: "absolute",
+      top: `${top}%`,
+      left: `${left}%`,
+      width: `${size}px`,
+      height: `${size}px`,
+      borderRadius: "50%",
+      borderWidth,
+      backgroundColor: "#BABCC1"
+    }}>
+    </div>
+  )
 }
 
 
 
-class App extends React.Component<{}, {illumination: suncalc.Illumination}> {
+class App extends React.Component<{}, {illumination: suncalc.Illumination, date:moment.Moment}> {
+
+  constructor() {
+    super()
+    const date = moment()
+    const illumination = suncalc.getMoonIllumination(date.toDate())
+    this.state = {
+      date,
+      illumination
+    }
+  }
 
   componentDidMount() {
-    const start = moment()
     setInterval(() => {
-      const nextDate = moment(start).add(1, "days")
+      const date = moment(this.state.date).add(1, "days")
+      const illumination = suncalc.getMoonIllumination(date.toDate())
       this.setState({
-        illumination: suncalc.getMoonIllumination(nextDate.toDate())
+        date,
+        illumination
       })
-    }, 2000)
+    }, 500)
   }
 
   render() {
-    return <div>
-    
+    return <div style={{backgroundColor: "#34495E"}}>
+      <br />
       <Moon illumination={this.state.illumination} size={300} />
 
     </div>

@@ -23,7 +23,12 @@ server.use((ctx) => {
     <head>
       <style>
 
-        html, body, app {
+        * {
+          padding: 0px;
+          margin: 0px;
+        }
+
+        html, body, #app, [data-reactroot] {
           height: 100%;
           width: 100%;
         }
