@@ -12,6 +12,7 @@ declare module 'koa-webpack-dev-middleware' {
 
   interface MiddlewareOptions {
     publicPath:String
+    lazy?:boolean
   }
 
   function KoaWebpackDevMiddleware(compiler:Webpack.compiler.Compiler, options:MiddlewareOptions):(ctx: Koa.Context, next: () => Promise<any>) => any

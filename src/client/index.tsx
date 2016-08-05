@@ -6,12 +6,12 @@ import * as ReactDOM from 'react-dom'
 class C extends React.Component<{}, {}> {
 
   render() {
-    return <div>lol testr</div>
+    return <div>Hello World</div>
   }
 
 }
 
 ReactDOM.render(
     <C/>,
-    document.body
+    document.getElementById("app")
 );

@@ -9,8 +9,22 @@ const server = new Koa()
 
 const webpackConfig:webpack.Configuration = require("../../webpack.config.js")
 
-console.log(webpackConfig)
-
 server.use(webpackDev(webpack(webpackConfig), {
+  lazy: false,
   publicPath: "/assets/"
 }))
+
+server.use((ctx) => {
+  ctx.body = `
+   <html>
+    <head>
+    </head>
+    <body>
+      <div id="app"></div>
+      <script src="/assets/bundle.js"></script>
+    </body>
+   </html>
+  `
+})
+
+server.listen(3000)
