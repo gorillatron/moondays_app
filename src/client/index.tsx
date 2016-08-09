@@ -4,28 +4,10 @@ import * as ReactDOM from 'react-dom'
 import * as moondays from 'moondays'
 import * as suncalc from 'suncalc'
 import * as moment from 'moment'
+import {phaseSweepMag} from './lib/moon'
 
 
-function phase_junk(phase) {
-    let sweep = []
-    let mag = 0
 
-    if (phase <= 0.25) {
-        sweep = [ 1, 0 ];
-        mag = 20 - 20 * phase * 4
-    } else if (phase <= 0.50) { 
-        sweep = [ 0, 0 ];
-        mag = 20 * (phase - 0.25) * 4
-    } else if (phase <= 0.75) {
-        sweep = [ 1, 1 ];
-        mag = 20 - 20 * (phase - 0.50) * 4
-    } else if (phase <= 1) {
-        sweep = [ 0, 1 ];
-        mag = 20 * (phase - 0.75) * 4
-    }
-
-    return {sweep, mag}
-}
 
 const colors = {
   moon: "#d5d9d9",
@@ -48,15 +30,15 @@ const Moon = (properties:MoonProps) => {
     <div style={{
       position: "relative",
       overflow: 'hidden',
-      margin: "350px auto",
+      margin: "150px auto",
       width: `${size}px`,
       height: `${size}px`,
-      backgroundColor: colors.moon,
+      backgroundColor: colors.moonShadow,
       borderRadius: "50%",
       zIndex: 1,
     }}>
 
-      <MoonShadow size={size} illumination={illumination}/>
+      <MoonLight size={size} illumination={illumination}/>
 
       <Crater illumination={illumination} size={130} top={10} left={20} />
       <Crater illumination={illumination} size={55} top={55} left={12} />
@@ -67,23 +49,23 @@ const Moon = (properties:MoonProps) => {
 }
 
 
-const MoonShadow = (properties:MoonProps) => {
+const MoonLight = (properties:MoonProps) => {
 
   const {illumination, size} = properties
   const {fraction, phase} = illumination
 
-  const {sweep, mag} = phase_junk(phase)
+  const {sweep, mag} = phaseSweepMag(phase)
   
   const xmlns = "http://www.w3.org/2000/svg";
   const path = document.createElementNS(xmlns, 'path');
 
-  const d = `
-    m${size / 2},0
-    a${mag} ,20 0 1, ${sweep[0]} 0,${size} 
-    a20,20 0 1, ${sweep[1]} 0,-${size}
-  `
+  const svgsize = size + 2
 
-  
+  const d = `
+    m${svgsize / 2},0
+    a${mag} ,20 0 1, ${sweep[0]} 0,${svgsize} 
+    a20,20 0 1, ${sweep[1]} 0,-${svgsize}
+  `
   
   return (
     <div style={{
@@ -96,13 +78,14 @@ const MoonShadow = (properties:MoonProps) => {
     }}>
 
       <svg
-        height={`${size}px`}
-        width={`${size}px`}
+        height={`${svgsize}px`}
+        width={`${svgsize}px`}
+        fill={colors.moon}
         style={{
           position: 'absolute',
           backgroundColor: 'transparent',
-          top: '0px',
-          left: '0px'
+          top: '-1px',
+          left: '-1px'
         }}>
         <path d={d}></path>
       </svg>
@@ -128,7 +111,7 @@ const Crater = (properties:CraterProps) => {
 
   const maxBorderSize = size / 100 * 20
   const borderWidthPx = maxBorderSize - (maxBorderSize * fraction)
-  const borderWidth = phase > 0.5 ? `0px ${borderWidthPx}px ${borderWidthPx}px 0px` : `0px 0px ${borderWidthPx}px ${borderWidthPx}px`
+  const borderWidth = phase < 0.5 ? `0px ${borderWidthPx}px ${borderWidthPx}px 0px` : `0px 0px ${borderWidthPx}px ${borderWidthPx}px`
   const adjustedSize = size - borderWidthPx
   const borderOpacity = fraction * 0.5
 
@@ -185,8 +168,12 @@ class App extends React.Component<{}, {illumination: suncalc.Illumination, date:
   render() {
     return <div style={{backgroundColor: "#34495E"}}>
       <br />
+
+      <h1>{this.state.illumination.phase}</h1>
+
       <Moon illumination={this.state.illumination} size={300} />
 
+      
     </div>
   }
 
