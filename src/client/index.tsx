@@ -4,9 +4,8 @@ import * as ReactDOM from 'react-dom'
 import * as moondays from 'moondays'
 import * as suncalc from 'suncalc'
 import * as moment from 'moment'
+import * as snap from 'snapsvg' 
 import {phaseSweepMag} from './lib/moon'
-
-
 
 
 const colors = {
@@ -18,12 +17,13 @@ const colors = {
 
 interface MoonProps {
   size:number
-  illumination:suncalc.Illumination
+  illumination:suncalc.Illumination,
+  transitionDuration:number
 }
 
 const Moon = (properties:MoonProps) => {
 
-  const {illumination, size} = properties
+  const {illumination, size, transitionDuration} = properties
   const {fraction, phase} = illumination
 
   return (
@@ -38,11 +38,11 @@ const Moon = (properties:MoonProps) => {
       zIndex: 1,
     }}>
 
-      <MoonLight size={size} illumination={illumination}/>
+      <MoonLight size={size} transitionDuration={transitionDuration} illumination={illumination}/>
 
-      <Crater illumination={illumination} size={130} top={10} left={20} />
-      <Crater illumination={illumination} size={55} top={55} left={12} />
-      <Crater illumination={illumination} size={30} top={70} left={65} />
+      <Crater illumination={illumination} transitionDuration={transitionDuration} size={130} top={10} left={20} />
+      <Crater illumination={illumination} transitionDuration={transitionDuration} size={55} top={55} left={12} />
+      <Crater illumination={illumination} transitionDuration={transitionDuration} size={30} top={70} left={65} />
 
     </div>
   )
@@ -51,8 +51,9 @@ const Moon = (properties:MoonProps) => {
 
 const MoonLight = (properties:MoonProps) => {
 
-  const {illumination, size} = properties
+  const {illumination, size, transitionDuration} = properties
   const {fraction, phase} = illumination
+
 
   const {sweep, mag} = phaseSweepMag(phase)
   
@@ -87,13 +88,12 @@ const MoonLight = (properties:MoonProps) => {
           top: '-1px',
           left: '-1px'
         }}>
-        <path d={d}></path>
+        <path style={{ transition: `all ${transitionDuration}s linear` }} id="moon-path" d={d}> </path>
       </svg>
 
     </div>
   )
 }
-
 
 
 
@@ -106,7 +106,7 @@ interface CraterProps extends MoonProps {
 
 const Crater = (properties:CraterProps) => {
 
-  const {illumination, size, top, left} = properties
+  const {illumination, size, top, left, transitionDuration} = properties
   const {fraction, phase} = illumination
 
   const maxBorderSize = size / 100 * 20
@@ -128,6 +128,7 @@ const Crater = (properties:CraterProps) => {
       zIndex: 5,
     }}>
       <div style={{
+        transition: `all ${transitionDuration}s`,
         width: `${adjustedSize + 4}px`,
         height: `${adjustedSize + 4}px`,
         margin: '-2px 0px 0px -1px',
@@ -141,8 +142,9 @@ const Crater = (properties:CraterProps) => {
 }
 
 
+const interval = 600
 
-class App extends React.Component<{}, {illumination: suncalc.Illumination, date:moment.Moment}> {
+class App extends React.Component<{}, {illumination: suncalc.Illumination, prevIllmuniation:suncalc.Illumination, date:moment.Moment}> {
 
   constructor() {
     super()
@@ -150,19 +152,22 @@ class App extends React.Component<{}, {illumination: suncalc.Illumination, date:
     const illumination = suncalc.getMoonIllumination(date.toDate())
     this.state = {
       date,
-      illumination
+      illumination,
+      prevIllmuniation: illumination
     }
   }
 
   componentDidMount() {
     setInterval(() => {
       const date = moment(this.state.date).add(1, "days")
+      const prevIllmuniation = this.state.illumination
       const illumination = suncalc.getMoonIllumination(date.toDate())
       this.setState({
         date,
+        prevIllmuniation,
         illumination
       })
-    }, 100)
+    }, 600)
   }
 
   render() {
@@ -171,7 +176,7 @@ class App extends React.Component<{}, {illumination: suncalc.Illumination, date:
 
       <h1>{this.state.illumination.phase}</h1>
 
-      <Moon illumination={this.state.illumination} size={300} />
+      <Moon illumination={this.state.illumination} transitionDuration={interval / 1000} size={300} />
 
       
     </div>

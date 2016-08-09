@@ -3,12 +3,14 @@
   "dependencies": {},
   "globalDependencies": {
     "cookies": "registry:dt/cookies#0.5.1+20160316171810",
+    "d3": "registry:dt/d3#0.0.0+20160727131401",
     "es6-promise": "registry:dt/es6-promise#0.0.0+20160614011821",
     "koa": "registry:dt/koa#2.0.0+20160724024233",
     "koa-router": "registry:dt/koa-router#7.0.0+20160314083221",
     "moment": "registry:dt/moment#2.8.0+20160316155526",
     "react": "registry:dt/react#0.14.0+20160802191555",
     "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
+    "snapsvg": "registry:dt/snapsvg#0.4.1+20160317120654",
     "source-map": "registry:dt/source-map#0.0.0+20160317120654",
     "uglify-js": "registry:dt/uglify-js#2.6.1+20160316155526",
     "webpack": "registry:dt/webpack#1.12.9+20160724112410"
