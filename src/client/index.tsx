@@ -5,6 +5,28 @@ import * as moondays from 'moondays'
 import * as suncalc from 'suncalc'
 import * as moment from 'moment'
 
+
+function phase_junk(phase) {
+    let sweep = []
+    let mag = 0
+
+    if (phase <= 0.25) {
+        sweep = [ 1, 0 ];
+        mag = 20 - 20 * phase * 4
+    } else if (phase <= 0.50) { 
+        sweep = [ 0, 0 ];
+        mag = 20 * (phase - 0.25) * 4
+    } else if (phase <= 0.75) {
+        sweep = [ 1, 1 ];
+        mag = 20 - 20 * (phase - 0.50) * 4
+    } else if (phase <= 1) {
+        sweep = [ 0, 1 ];
+        mag = 20 * (phase - 0.75) * 4
+    }
+
+    return {sweep, mag}
+}
+
 const colors = {
   moon: "#d5d9d9",
   moonShadow: "#969999"
@@ -50,18 +72,40 @@ const MoonShadow = (properties:MoonProps) => {
   const {illumination, size} = properties
   const {fraction, phase} = illumination
 
-  const rLeft = 50
-  const rTop = (size + 4) / 2
+  const {sweep, mag} = phase_junk(phase)
+  
+  const xmlns = "http://www.w3.org/2000/svg";
+  const path = document.createElementNS(xmlns, 'path');
+
+  const d = `
+    m${size / 2},0
+    a${mag} ,20 0 1, ${sweep[0]} 0,${size} 
+    a20,20 0 1, ${sweep[1]} 0,-${size}
+  `
+
+  
   
   return (
     <div style={{
       position: 'absolute',
       zIndex: 2,
-      height: `${size + 4}px`,
-      width: `${size + 4}px`,
-      top: '-2px',
-      left: '-2px'
+      height: `${size}px`,
+      width: `${size}px`,
+      top: '0px',
+      left: '0px'
     }}>
+
+      <svg
+        height={`${size}px`}
+        width={`${size}px`}
+        style={{
+          position: 'absolute',
+          backgroundColor: 'transparent',
+          top: '0px',
+          left: '0px'
+        }}>
+        <path d={d}></path>
+      </svg>
 
     </div>
   )
