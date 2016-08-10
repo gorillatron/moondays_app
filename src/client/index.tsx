@@ -6,8 +6,9 @@ import * as moment from 'moment'
 import * as Hammer from 'hammerjs'
 import Moon from './components/moon/Moon'
 import {phaseSweepMag} from './lib/moon'
+import slider from './slider'
 
-
+alert(slider())
 const interval = 25
 
 class App extends React.Component<{}, {illumination: suncalc.Illumination, prevIllmuniation:suncalc.Illumination, date:moment.Moment}> {
@@ -27,7 +28,7 @@ class App extends React.Component<{}, {illumination: suncalc.Illumination, prevI
 
     const mc = new Hammer.Manager(document.getElementById("root"))
 
-    mc.add(new Hammer.Swipe())
+    mc.add(new Hammer.Swipe({direction: Hammer.DIRECTION_HORIZONTAL}))
 
     mc.on('swipe', (event) => {
       console.log(event.velocity)
