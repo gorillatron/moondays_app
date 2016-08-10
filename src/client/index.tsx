@@ -35,6 +35,7 @@ const Moon = (properties:MoonProps) => {
       height: `${size}px`,
       backgroundColor: colors.moonShadow,
       borderRadius: "50%",
+      border: "5px solid rgb(40,40,40)",
       zIndex: 1,
     }}>
 
@@ -124,7 +125,8 @@ const Crater = (properties:CraterProps) => {
       width: `${size}px`,
       height: `${size}px`,
       borderRadius: "50%",
-      backgroundColor: "#BABCC1",
+      backgroundColor: "rgb(186, 188, 193)",
+      border: "2px solid rgba(0,0,0, 0.4)",
       zIndex: 5,
     }}>
       <div style={{
@@ -142,7 +144,7 @@ const Crater = (properties:CraterProps) => {
 }
 
 
-const interval = 600
+const interval = 33
 
 class App extends React.Component<{}, {illumination: suncalc.Illumination, prevIllmuniation:suncalc.Illumination, date:moment.Moment}> {
 
@@ -159,7 +161,7 @@ class App extends React.Component<{}, {illumination: suncalc.Illumination, prevI
 
   componentDidMount() {
     setInterval(() => {
-      const date = moment(this.state.date).add(1, "days")
+      const date = moment(this.state.date).add(3, "hours")
       const prevIllmuniation = this.state.illumination
       const illumination = suncalc.getMoonIllumination(date.toDate())
       this.setState({
@@ -167,7 +169,7 @@ class App extends React.Component<{}, {illumination: suncalc.Illumination, prevI
         prevIllmuniation,
         illumination
       })
-    }, 600)
+    }, interval)
   }
 
   render() {
