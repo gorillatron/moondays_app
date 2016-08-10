@@ -8,7 +8,7 @@ import {phaseSweepMag} from './lib/moon'
 
 
 
-const interval = 33
+const interval = 25
 
 class App extends React.Component<{}, {illumination: suncalc.Illumination, prevIllmuniation:suncalc.Illumination, date:moment.Moment}> {
 
@@ -43,7 +43,7 @@ class App extends React.Component<{}, {illumination: suncalc.Illumination, prevI
       <h1 style={{textAlign: "center", color: "rgba(255,255,255, 0.8)", fontFamily: 'arial'}}>{this.state.illumination.phase.toFixed(2)}</h1>
 
       <div style={{textAlign: 'center', margin: '100px auto 0px auto', width: '360px'}}>
-        <Moon illumination={this.state.illumination} transitionDuration={interval / 1000} size={350} />
+        <Moon illumination={this.state.illumination} transitionDuration={interval / 1000} size={250} />
       </div>
 
       

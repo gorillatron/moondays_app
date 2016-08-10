@@ -1,5 +1,5 @@
 
 export const colors = {
-  moon: "rgb(241, 247, 210)",
-  moonShadow: "rgba(20,20,20, 0.2)"
+  moon: "rgb(248, 250, 238)",
+  moonShadow: "rgba(20,20,20, 0.4)"
 }

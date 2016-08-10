@@ -48,7 +48,7 @@ export default (properties:MoonProps) => {
 
         <defs>
           <filter id="glow">
-            <feGaussianBlur stdDeviation="8.5" result="coloredBlur"/>
+            <feGaussianBlur stdDeviation={`${size * 0.027}`} result="coloredBlur"/>
             <feMerge>
               <feMergeNode in="coloredBlur"/>
               <feMergeNode in="SourceGraphic"/>
