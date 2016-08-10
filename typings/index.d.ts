@@ -1,6 +1,7 @@
 /// <reference path="globals/cookies/index.d.ts" />
 /// <reference path="globals/d3/index.d.ts" />
 /// <reference path="globals/es6-promise/index.d.ts" />
+/// <reference path="globals/hammerjs/index.d.ts" />
 /// <reference path="globals/koa-router/index.d.ts" />
 /// <reference path="globals/koa/index.d.ts" />
 /// <reference path="globals/moment/index.d.ts" />
