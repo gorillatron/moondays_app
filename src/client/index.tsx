@@ -4,6 +4,7 @@ import * as ReactDOM from 'react-dom'
 import * as suncalc from 'suncalc'
 import * as moment from 'moment'
 import * as Hammer from 'hammerjs'
+import moondays from 'moondays'
 import Moon from './components/moon/Moon'
 import {phaseSweepMag} from './lib/moon'
 
@@ -11,10 +12,13 @@ import {phaseSweepMag} from './lib/moon'
 const interval = 25
 
 
-function ease(t, b, c, d) {
+const ease = function (t, b, c, d) {
 	t /= d;
 	return -c * t*(t-2) + b;
 }
+
+
+const ensurePos = (n) => n < 0 ? n * -1 : n
 
 class App extends React.Component<{}, {illumination: suncalc.Illumination, prevIllmuniation:suncalc.Illumination, date:moment.Moment}> {
 
@@ -31,7 +35,6 @@ class App extends React.Component<{}, {illumination: suncalc.Illumination, prevI
 
   componentDidMount() {
 
-    
     const mc = new Hammer.Manager(document.getElementById("root"))
     const pan = new Hammer.Pan({direction: Hammer.DIRECTION_HORIZONTAL})
     const swipe = new Hammer.Swipe({direction: Hammer.DIRECTION_HORIZONTAL})
@@ -42,13 +45,41 @@ class App extends React.Component<{}, {illumination: suncalc.Illumination, prevI
     mc.add(swipe)
 
     let origin = this.state.date
+    let animating = false
 
     mc.on('swipe', (event) => {
       origin = this.state.date
+      
+      animating = true
+
+      const startTime = Date.now()
+      const duration = 150 * event.velocityX
+      const startX = 0
+      const endX = event.velocityX * 2.1
+      
+      const render = () => {
+        if(!animating) {
+          return
+        }
+
+        const t = Date.now() - startTime
+
+        if(ensurePos(t / duration) < 1) {
+          const mod = endX * ease(t, startX, startX - endX, duration)
+          this.setDate(origin, mod)
+          setTimeout(() => render(), interval)
+        }
+      }
+
+      render()
     })
 
     mc.on('pan', (event) => {
-      this.setDate(origin, (event.deltaX / 5) * -1)
+      if(animating) {
+        animating = false
+        origin = this.state.date
+      }
+      this.setDate(origin, (event.deltaX / 3) * -1)
     })
   }
 
@@ -70,7 +101,7 @@ class App extends React.Component<{}, {illumination: suncalc.Illumination, prevI
       <h1 style={{textAlign: "center", color: "rgba(255,255,255, 0.8)", fontFamily: 'arial'}}>{this.state.date.calendar()}</h1>
 
       <div style={{textAlign: 'center', margin: '100px auto 0px auto', width: '360px'}}>
-        <Moon illumination={this.state.illumination} transitionDuration={interval / 1000} size={250} />
+        <Moon illumination={this.state.illumination} transitionDuration={interval / 1000} size={350} />
       </div>
 
       
