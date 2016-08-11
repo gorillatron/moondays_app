@@ -20,7 +20,7 @@ const ease = function (t, b, c, d) {
 
 const ensurePos = (n) => n < 0 ? n * -1 : n
 
-class App extends React.Component<{}, {illumination: suncalc.Illumination, prevIllmuniation:suncalc.Illumination, date:moment.Moment}> {
+class App extends React.Component<{}, {illumination: suncalc.Illumination, date:moment.Moment}> {
 
   constructor() {
     super()
@@ -28,8 +28,7 @@ class App extends React.Component<{}, {illumination: suncalc.Illumination, prevI
     const illumination = suncalc.getMoonIllumination(date.toDate())
     this.state = {
       date,
-      illumination,
-      prevIllmuniation: illumination
+      illumination
     }
   }
 
@@ -51,11 +50,13 @@ class App extends React.Component<{}, {illumination: suncalc.Illumination, prevI
       origin = this.state.date
       
       animating = true
+      
+      const {direction, velocityX} = event
 
       const startTime = Date.now()
-      const duration = 150 * event.velocityX
+      const duration = 150 * velocityX
       const startX = 0
-      const endX = event.velocityX * 2.1
+      const endX = velocityX * 2.1
       
       const render = () => {
         if(!animating) {
@@ -85,27 +86,27 @@ class App extends React.Component<{}, {illumination: suncalc.Illumination, prevI
 
   setDate(origin, mod) {
     const date = moment(origin).add(mod, "hours")
-    const prevIllmuniation = this.state.illumination
     const illumination = suncalc.getMoonIllumination(date.toDate())
     this.setState({
       date,
-      prevIllmuniation,
       illumination
     })
   }
 
   render() {
-    return <div id="root" style={{backgroundColor: `rgba(59, 63, 95, ${((1 - this.state.illumination.fraction) * 0.05) + 0.95})`}}>
-      <br />
+    return (
+      <div id="root" style={{backgroundColor: `rgba(59, 63, 95, ${((1 - this.state.illumination.fraction) * 0.05) + 0.95})`}}>
 
-      <h1 style={{textAlign: "center", color: "rgba(255,255,255, 0.8)", fontFamily: 'arial'}}>{this.state.date.calendar()}</h1>
+        <h1 style={{textAlign: "center", color: "rgba(255,255,255, 0.8)", fontFamily: 'arial'}}>{this.state.date.calendar()}</h1>
 
-      <div style={{textAlign: 'center', margin: '100px auto 0px auto', width: '360px'}}>
-        <Moon illumination={this.state.illumination} transitionDuration={interval / 1000} size={350} />
+        <div style={{textAlign: 'center', margin: '100px auto 0px auto', width: '360px'}}>
+
+          <Moon illumination={this.state.illumination} transitionDuration={interval / 1000} size={350} />
+          
+        </div>
+        
       </div>
-
-      
-    </div>
+    )
   }
 
 }
